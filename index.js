@@ -4,16 +4,11 @@ const generateMarkdown = require('./utils/generateMarkdown');
 
 
 function questions () {
-    inquirer.prompt([
-        {
-            type: 'input',
-            message: 'What is your GitHub username?',
-            name: 'username',
-        },
+    return inquirer.prompt([
         {
             type: 'input',
             message: 'What is the title of your project?',
-            name: 'ttle',
+            name: 'title',
         },
         {
             type: 'input',
@@ -31,9 +26,9 @@ function questions () {
             name: 'usage',
         },
         {
-            type: 'checkbox',
+            type: 'list',
             message: 'If applicable, what is the license name?',
-            choices: ['Mozillila', 'Open Software', 'PostgreSQL', 'N/A', 'Other'],
+            choices: ['Mozillila', 'Open Software', 'PostgreSQL', 'N/A'],
             name: 'license',
         },
         {
@@ -48,6 +43,11 @@ function questions () {
         },
         {
             type: 'input',
+            message: 'What is your GitHub username?',
+            name: 'username',
+        },
+        {
+            type: 'input',
             message: 'What is your email?',
             name: 'email',
         }
@@ -57,18 +57,18 @@ function questions () {
 
 function init() {
     questions()
-    .catch((err) => console.log(err))
     .then( data => { 
-        return writeToFile('README.md', data)
+        return writeToFile('./output/README.md', data)
     })
-    .then( () => console.log('README Created Successfully!!'))
-    .catch((err) => console.log(err))
+
 };
 
 function writeToFile(fileName, data) {
-    const createREADME = generateMarkdown.generateMarkdown(data);
+    const createREADME = generateMarkdown(data)
 
-    writeFile(fileName, createREADME);
+    fs.writeFile(fileName, createREADME, (err) => 
+    err ? console.log(err) : console.log('Successfully created README')
+    );
 };
 
 init();
